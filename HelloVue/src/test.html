@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>hellovue</title>
+  <script src="../vue.js"></script>
+
+</head>
+<body>
+  <div id="app">
+    <div  @click="noname">{{msg}}</div><br>
+    <div v-bind:title="title">title</div><br>
+    <div v-show="show">{{msg}}</div><br>
+    <input v-model="msg"><!-- 双向数据绑定--><br>
+    <input v-model="title"><br>
+    <h1>{{fullmsg}}</h1><br>
+    <h1>{{counter}}</h1><br>
+    <div>
+      <input v-model="inputValue">
+      <button @click="listclick">提交</button>
+    </div>
+    <ul>
+      <!--li v-for="(item,index) of list":key="index">{{item}}</li-->
+      <todo-item
+        v-for="(item,index) of list"
+        :key="index"
+        :content="item"
+        :index="index"
+        @delete="itemdelete"
+      >
+
+      </todo-item>
+    </ul>
+  </div>
+</body>
+<script>
+
+  Vue.component('todo-item',{
+    props:['content','index'],
+    template:'<li @click="handleClick">{{content}}{{index}}</li>',
+    methods: {
+      handleClick:function () {
+        this.$emit('delete',this.index)
+      },
+
+    },
+  })
+
+  // var TodoItem={
+  //   template:'<li>item</li>'
+  // }
+
+  new Vue({
+    el:"#app",
+    data:{
+      show:true,
+      msg: "hello",
+      title:"this is a title",
+      counter:0,
+      inputValue:'hello',
+      list:[],
+    },
+    methods:{
+      noname:function () {
+        alert(123)
+        this.msg="noname"
+        this.show=!this.show;
+      },
+      listclick:function () {
+        this.list.push(this.inputValue)
+        this.inputValue=''//点击提交后，input为空
+      },
+      itemdelete:function (index) {
+        this.list.splice(index,1)
+      }//删除todolist
+    },
+    computed:{
+      fullmsg:function () {
+        return this.msg+" "+this.title
+      }
+    },
+    watch:{
+      fullmsg:function () {
+        this.counter++
+      }
+    },
+    // components:{
+    //   'todo-item':TodoItem,
+    // },
+
+
+  })
+
+</script>
+
+<!-- built files will be auto injected -->
+
+</body>
+</html>
